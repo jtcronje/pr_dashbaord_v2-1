@@ -1,0 +1,20 @@
+# Ignore secrets and sensitive files
+secrets.py
+.env
+config.json
+credentials.json
+*_secrets.*
+
+# Ignore virtual environment
+venv/
+env/
+
+# Ignore cache files
+__pycache__/
+*.pyc
+.DS_Store
+
+# Other common files to ignore
+*.log
+.idea/
+.vscode/
