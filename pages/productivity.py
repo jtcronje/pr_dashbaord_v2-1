@@ -7,7 +7,8 @@ import os
 import plotly.express as px
 import plotly.graph_objects as go
 import json
-import openai
+from openai import OpenAI
+import traceback
 
 # Add parent directory to path to allow imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -370,7 +371,7 @@ def render_productivity_page(data_dict, filters):
                                 st.info("To use the AI analysis feature, you need to add your OpenAI API key. It should start with 'sk-' (not 'sk-proj-').")
                                 return
                             
-                            client = openai.OpenAI(api_key=api_key)
+                            client = OpenAI(api_key=api_key)
                             
                             # Create a completion using the new API format
                             response = client.chat.completions.create(
@@ -389,7 +390,8 @@ def render_productivity_page(data_dict, filters):
                             st.markdown("### AI Interpretation")
                             st.markdown(ai_content)
                         except Exception as e:
-                            st.error(f"Error generating AI interpretation: {str(e)}")
+                            st.error(f"Detailed OpenAI error: {type(e).__name__}: {str(e)}")
+                            st.error(traceback.format_exc())
                             st.info("Ensure that you have set up your OpenAI API key correctly in st.secrets or as an environment variable.")
                     except Exception as outer_e:
                         st.error(f"Error preparing data for AI interpretation: {str(outer_e)}")
@@ -660,8 +662,9 @@ def render_productivity_page(data_dict, filters):
                             st.warning("⚠️ Please set a valid OpenAI API key in .streamlit/secrets.toml")
                             st.info("To use the AI analysis feature, you need to add your OpenAI API key. It should start with 'sk-' (not 'sk-proj-').")
                             return
-                            
-                        client = openai.OpenAI(api_key=api_key)
+                        
+                        # Create OpenAI client with the updated pattern
+                        client = OpenAI(api_key=api_key)
                         
                         # Create a completion using the new API format
                         response = client.chat.completions.create(
@@ -680,11 +683,11 @@ def render_productivity_page(data_dict, filters):
                         st.markdown("### AI Analysis")
                         st.markdown(ai_content)
                     except Exception as e:
-                        st.error(f"Error generating AI analysis: {str(e)}")
+                        st.error(f"Detailed OpenAI error: {type(e).__name__}: {str(e)}")
+                        st.error(traceback.format_exc())
                         st.info("Ensure that you have set up your OpenAI API key correctly in st.secrets or as an environment variable.")
                 except Exception as e:
-                    st.error(f"Error generating AI analysis: {str(e)}")
-                    st.info("Ensure that you have set up your OpenAI API key correctly in st.secrets or as an environment variable.")
+                    st.error(f"Error preparing data for AI analysis: {str(e)}")
     # DRILL-DOWN ANALYSIS
     # =================
     st.markdown("### Drill-Down Analysis")

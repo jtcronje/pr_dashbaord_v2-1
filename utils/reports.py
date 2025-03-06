@@ -11,7 +11,8 @@ import calendar
 import os
 from matplotlib.image import imread
 import json
-import openai
+from openai import OpenAI
+import traceback
 
 # Add JSON encoder for NumPy types
 class NumpyEncoder(json.JSONEncoder):
@@ -378,21 +379,27 @@ def generate_employee_report(employee_id, employee_data, payroll_df, leave_df, p
                                     # Just log a message, don't show in UI since this is for reports
                                     print("Warning: No valid OpenAI API key found in secrets.")
                                     return
-                                    
-                                client = openai.OpenAI(api_key=api_key)
+                                
+                                # Create OpenAI client with the updated pattern
+                                client = OpenAI(api_key=api_key)
                                 
                                 # Create a completion using the new API format
-                                response = client.chat.completions.create(
-                                    model="gpt-4o-mini",
-                                    temperature=0.7,
-                                    messages=[
-                                        {"role": "system", "content": "You are a workforce analytics expert."}, 
-                                        {"role": "user", "content": prompt}
-                                    ]
-                                )
-                                
-                                # Parse the response and add to the report
-                                ai_analysis = response.choices[0].message.content
+                                try:
+                                    response = client.chat.completions.create(
+                                        model="gpt-4o-mini",
+                                        temperature=0.7,
+                                        messages=[
+                                            {"role": "system", "content": "You are a workforce analytics expert."}, 
+                                            {"role": "user", "content": prompt}
+                                        ]
+                                    )
+                                    
+                                    # Parse the response and add to the report
+                                    ai_analysis = response.choices[0].message.content
+                                except Exception as e:
+                                    print(f"Error with OpenAI API: {type(e).__name__}: {str(e)}")
+                                    print(traceback.format_exc())
+                                    ai_analysis = "AI analysis unavailable. Please check your OpenAI API key configuration."
                                 
                                 # Display AI insights with proper formatting
                                 y_pos = 0.88

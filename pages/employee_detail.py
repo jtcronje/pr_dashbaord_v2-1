@@ -11,8 +11,9 @@ from io import BytesIO, StringIO
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.dates as mdates
-import openai
 import json
+from openai import OpenAI
+import traceback
 
 # Add parent directory to path to allow imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -469,7 +470,8 @@ def render_employee_detail_page(data_dict, filters):
                                     st.info("To use the AI analysis feature, you need to add your OpenAI API key. It should start with 'sk-' (not 'sk-proj-').")
                                     return
                                     
-                                client = openai.OpenAI(api_key=api_key)
+                                # Create OpenAI client with the updated pattern
+                                client = OpenAI(api_key=api_key)
                                 
                                 # Create a completion using the new API format
                                 response = client.chat.completions.create(
@@ -484,12 +486,13 @@ def render_employee_detail_page(data_dict, filters):
                                 # Extract content from the response
                                 ai_content = response.choices[0].message.content
                                 
-                                # Display the AI insights
+                                # Display the AI analysis
+                                st.markdown("### AI Analysis")
                                 st.markdown(ai_content)
-                                
-                            except Exception as ai_error:
-                                st.error(f"Error generating AI insights: {str(ai_error)}")
-                                st.info("Make sure your OpenAI API key is correctly set in .streamlit/secrets.toml")
+                            except Exception as e:
+                                st.error(f"Detailed OpenAI error: {type(e).__name__}: {str(e)}")
+                                st.error(traceback.format_exc())
+                                st.info("Ensure that you have set up your OpenAI API key correctly in st.secrets or as an environment variable.")
                         
                         except Exception as e:
                             st.error(f"Error preparing data for analysis: {str(e)}")
