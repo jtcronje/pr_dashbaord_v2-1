@@ -366,7 +366,7 @@ def generate_employee_report(employee_id, employee_data, payroll_df, leave_df, p
                             4. Overall assessment: Is the employee's trajectory positive or concerning?
                             5. Management recommendations: What actions should be taken?
                             
-                            Keep your entire response under 600 words for a printed report.
+                            Keep your entire response under 300 words for a printed report.
                             """
                             
                             # Get AI insights
