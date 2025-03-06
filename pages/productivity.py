@@ -363,7 +363,14 @@ def render_productivity_page(data_dict, filters):
                         
                         try:
                             # Initialize the client
-                            client = openai.OpenAI(api_key=st.secrets.get("OPENAI_API_KEY", "your-openai-api-key-here"))
+                            api_key = st.secrets.get("OPENAI_API_KEY", None)
+                            
+                            if not api_key or api_key == "sk-your-api-key-here":
+                                st.warning("⚠️ Please set a valid OpenAI API key in .streamlit/secrets.toml")
+                                st.info("To use the AI analysis feature, you need to add your OpenAI API key. It should start with 'sk-' (not 'sk-proj-').")
+                                return
+                            
+                            client = openai.OpenAI(api_key=api_key)
                             
                             # Create a completion using the new API format
                             response = client.chat.completions.create(
@@ -647,7 +654,14 @@ def render_productivity_page(data_dict, filters):
                     
                     try:
                         # Initialize the client
-                        client = openai.OpenAI(api_key=st.secrets.get("OPENAI_API_KEY", "your-openai-api-key-here"))
+                        api_key = st.secrets.get("OPENAI_API_KEY", None)
+                        
+                        if not api_key or api_key == "sk-your-api-key-here":
+                            st.warning("⚠️ Please set a valid OpenAI API key in .streamlit/secrets.toml")
+                            st.info("To use the AI analysis feature, you need to add your OpenAI API key. It should start with 'sk-' (not 'sk-proj-').")
+                            return
+                            
+                        client = openai.OpenAI(api_key=api_key)
                         
                         # Create a completion using the new API format
                         response = client.chat.completions.create(

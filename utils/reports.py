@@ -372,7 +372,14 @@ def generate_employee_report(employee_id, employee_data, payroll_df, leave_df, p
                             # Get AI insights
                             try:
                                 # Initialize the client
-                                client = openai.OpenAI(api_key=st.secrets.get("OPENAI_API_KEY", "your-openai-api-key-here"))
+                                api_key = st.secrets.get("OPENAI_API_KEY", None)
+                                
+                                if not api_key or api_key == "sk-your-api-key-here":
+                                    # Just log a message, don't show in UI since this is for reports
+                                    print("Warning: No valid OpenAI API key found in secrets.")
+                                    return
+                                    
+                                client = openai.OpenAI(api_key=api_key)
                                 
                                 # Create a completion using the new API format
                                 response = client.chat.completions.create(
