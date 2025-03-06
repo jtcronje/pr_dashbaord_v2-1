@@ -5,10 +5,7 @@ plotly==5.18.0
 faker==22.6.0
 matplotlib==3.8.2
 reportlab==4.0.9
-# Fix for the wordcloud issue - use a pre-built wheel
-wordcloud==1.9.1.1
-# Fix for the langchain conflict - use compatible versions
-langchain==0.0.350
+langchain==0.0.267
 langchain-core==0.0.19
 langchain-openai==0.0.5
 openai==1.12.0
